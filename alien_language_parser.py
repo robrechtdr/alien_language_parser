@@ -133,35 +133,35 @@ def break_first_operable_group(stri, break_side="right"):
     return head, remainder
 
 
-def parenthesis_break(stri, direction="l2r"):
+def break_parenthesis(stri, direction="l2r"):
     """
-    >>> parenthesis_break("(2 RIGHT 3)", "l2r")
+    >>> break_parenthesis("(2 RIGHT 3)", "l2r")
     ('(2 RIGHT 3', '')
 
-    >>> parenthesis_break("(1 LEFT (2 RIGHT 3))", "l2r")
+    >>> break_parenthesis("(1 LEFT (2 RIGHT 3))", "l2r")
     ('(1 LEFT (2 RIGHT 3', ')')
 
     # Doc tests won't allow string line break via parenthesis alone
-    >>> parenthesis_break(\
+    >>> break_parenthesis(\
         "(2 UP ((1 LEFT (2 RIGHT 3)) UP 3)) DOWN 11", "l2r")
     ('(2 UP ((1 LEFT (2 RIGHT 3', ') UP 3)) DOWN 11')
 
-    >>> parenthesis_break('(2 RIGHT 3', "r2l")
+    >>> break_parenthesis('(2 RIGHT 3', "r2l")
     ('', '2 RIGHT 3')
 
-    >>> parenthesis_break("(1 LEFT (2 RIGHT 3", "r2l")
+    >>> break_parenthesis("(1 LEFT (2 RIGHT 3", "r2l")
     ('(1 LEFT ', '2 RIGHT 3')
 
-    >>> parenthesis_break("(2 UP ((1 LEFT (2 RIGHT 3", "r2l")
+    >>> break_parenthesis("(2 UP ((1 LEFT (2 RIGHT 3", "r2l")
     ('(2 UP ((1 LEFT ', '2 RIGHT 3')
 
-    >>> parenthesis_break('(2 RIGHT 3)', "bla")
+    >>> break_parenthesis('(2 RIGHT 3)', "bla")
     Traceback (most recent call last):
       File "/usr/lib/python2.7/doctest.py", line 1289, in __run
         compileflags, 1) in test.globs
-      File "<doctest __main__.parenthesis_break[6]>", line 1, in <module>
-        parenthesis_break('(2 RIGHT 3)', "bla")
-      File "alien_language_parser.py", line 166, in parenthesis_break
+      File "<doctest __main__.break_parenthesis[6]>", line 1, in <module>
+        break_parenthesis('(2 RIGHT 3)', "bla")
+      File "alien_language_parser.py", line 166, in break_parenthesis
         raise Exception("'{0}' is not a valid argument".format(direction))
     Exception: 'bla' is not a valid argument
 
@@ -240,8 +240,8 @@ def alien_eval(alien_string):
 
     # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
     elif alien_string.startswith("("):
-        l2r_first, parse_data.L2R_LAST = parenthesis_break(alien_string, "l2r")
-        parse_data.R2L_LAST, r2l_first = parenthesis_break(l2r_first, "r2l")
+        l2r_first, parse_data.L2R_LAST = break_parenthesis(alien_string, "l2r")
+        parse_data.R2L_LAST, r2l_first = break_parenthesis(l2r_first, "r2l")
         return alien_eval(r2l_first)
 
     else:
