@@ -203,7 +203,7 @@ def alien_eval(alien_string):
     0
 
     # This case follows another parsing path
-    # not tested with the given examples!
+    # which was not tested with the given examples!
     >>> alien_eval("18 RIGHT (3 LEFT 4)")
     3
 
