@@ -84,57 +84,53 @@ def operate(operable_string):
             "Operator in '{0}' is invalid".format(operable_string))
 
 
-def break_first_operable_group_right_sided(stri):
+def break_first_operable_group(stri, break_side="right"):
     """
-    >>> break_first_operable_group_right_sided('3 LEFT 4')
+    >>> break_first_operable_group('3 LEFT 4', 'right')
     ('3 LEFT ', '4')
 
-    >>> break_first_operable_group_right_sided('23 RIGHT 3 LEFT 12')
+    >>> break_first_operable_group('23 RIGHT 3 LEFT 12', 'right')
     ('23 RIGHT ', '3 LEFT 12')
 
-    >>> break_first_operable_group_right_sided('(23 RIGHT 3 LEFT 12')
-    Traceback (most recent call last):
-      File "/usr/lib/python2.7/doctest.py", line 1289, in __run
-        compileflags, 1) in test.globs
-      File "<doctest __main__.break_first_operable_group_right_sided[2]>",
-        line 1, in <module>
-        break_first_operable_group_right_sided("(23 RIGHT 3 LEFT 12")
-      File "policy_brain.py", line 65, in break_first_operable_group_right_sided
-        raise Exception("Should start with a digit")
-    Exception: Should start with a digit
-
-    """
-    if not stri[0].isdigit():
-        raise Exception("Should start with a digit")
-    head = "{0} ".format(" ".join(stri.split()[:2]))
-    remainder = " ".join(stri.split()[2:])
-    return head, remainder
-
-
-def break_first_operable_group_left_sided(stri):
-    """
-    >>> break_first_operable_group_left_sided('3 LEFT 4')
+    >>> break_first_operable_group('3 LEFT 4', 'left')
     ('3', ' LEFT 4')
 
-    >>> break_first_operable_group_left_sided('23 RIGHT 3 LEFT 12')
+    >>> break_first_operable_group('23 RIGHT 3 LEFT 12', 'left')
     ('23', ' RIGHT 3 LEFT 12')
 
-    >>> break_first_operable_group_left_sided('(23 RIGHT 3 LEFT 12')
+    >>> break_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
     Traceback (most recent call last):
       File "/usr/lib/python2.7/doctest.py", line 1289, in __run
         compileflags, 1) in test.globs
-      File "<doctest __main__.break_first_operable_group_right_sided[2]>",
+      File "<doctest __main__.break_first_operable_group[4]>",
+      line 1, in <module>
+        break_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
+      File "alien_language_parser.py", line 125, in break_first_operable_group
+        raise Exception("'{0}' is not a valid argument".format(break_side))
+    Exception: 'bla' is not a valid argument
+
+    >>> break_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
+    Traceback (most recent call last):
+      File "/usr/lib/python2.7/doctest.py", line 1289, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.break_first_operable_group[2]>",
         line 1, in <module>
-        break_first_operable_group_left_sided("(23 RIGHT 3 LEFT 12")
-      File "policy_brain.py", line 65, in break_first_operable_group_right_sided
+        break_first_operable_group("(23 RIGHT 3 LEFT 12", 'right')
+      File "policy_brain.py", line 65, in break_first_operable_group
         raise Exception("Should start with a digit")
     Exception: Should start with a digit
-
     """
     if not stri[0].isdigit():
         raise Exception("Should start with a digit")
-    head = " ".join(stri.split()[:1])
-    remainder = " {0}".format(" ".join(stri.split()[1:]))
+    split = stri.split()
+    if break_side == "right":
+        head = "{0} ".format(" ".join(split[:2]))
+        remainder = " ".join(split[2:])
+    elif break_side == "left":
+        head = " ".join(split[:1])
+        remainder = " {0}".format(" ".join(split[1:]))
+    else:
+        raise Exception("'{0}' is not a valid argument".format(break_side))
     return head, remainder
 
 
@@ -218,9 +214,9 @@ def alien_eval(alien_string):
             parse_data.L2R_LAST = ""
             return alien_eval(current_string)
         else:
-            rhead, rremainder = break_first_operable_group_right_sided(alien_string)
+            rhead, rremainder = break_first_operable_group(alien_string, "right")
             if not rremainder.startswith('('):
-                lhead, lremainder = break_first_operable_group_left_sided(rremainder)
+                lhead, lremainder = break_first_operable_group(rremainder, "left")
                 operable_stri = "{0}{1}".format(rhead, lhead)
                 tmp_result = operate(operable_stri)
                 current_string = "{0}{1}".format(tmp_result, lremainder)
