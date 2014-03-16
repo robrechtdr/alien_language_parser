@@ -3,7 +3,6 @@
 #  Our own little alien language parsing utility  #
 ###################################################
 
-Applicant: Robrecht De Rouck
 """
 
 
