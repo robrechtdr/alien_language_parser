@@ -209,8 +209,10 @@ def alien_eval(alien_string):
 
     """
     if alien_string[0].isdigit():
+        # Case: "12"
         if len(alien_string.split()) == 1:
             return int(alien_string)
+        # Case: "2 RIGHT 12"
         elif len(alien_string.split()) == 3:
             tmp_result = operate(alien_string)
             current_string = "{0}{1}{2}".format(parse_data.R2L_LAST,
@@ -220,18 +222,23 @@ def alien_eval(alien_string):
             parse_data.L2R_LAST = ""
             return alien_eval(current_string)
         else:
-            rhead, rremainder = break_first_operable_group(alien_string, "right")
+            rhead, rremainder = break_first_operable_group(alien_string,
+                                                           "right")
+            # Case: "2 RIGHT 12 LEFT 3"
             if not rremainder.startswith('('):
-                lhead, lremainder = break_first_operable_group(rremainder, "left")
+                lhead, lremainder = break_first_operable_group(rremainder,
+                                                               "left")
                 operable_stri = "{0}{1}".format(rhead, lhead)
                 tmp_result = operate(operable_stri)
                 current_string = "{0}{1}".format(tmp_result, lremainder)
                 return alien_eval(current_string)
 
+            # Case: "2 RIGHT (3 RIGHT 4)"
             else:
                 tmp_result = "{0}{1}".format(rhead, alien_eval(rremainder))
                 return int(operate(tmp_result))
 
+    # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
     elif alien_string.startswith("("):
         l2r_first, parse_data.L2R_LAST = parenthesis_break(alien_string, "l2r")
         parse_data.R2L_LAST, r2l_first = parenthesis_break(l2r_first, "r2l")
