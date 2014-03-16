@@ -133,39 +133,46 @@ def break_first_operable_group(stri, break_side="right"):
     return head, remainder
 
 
-def left_to_right_parenth_break(stri):
+def parenthesis_break(stri, direction="l2r"):
     """
-    >>> left_to_right_parenth_break("(2 RIGHT 3)")
+    >>> parenthesis_break("(2 RIGHT 3)", "l2r")
     ('(2 RIGHT 3', '')
 
-    >>> left_to_right_parenth_break("(1 LEFT (2 RIGHT 3))")
+    >>> parenthesis_break("(1 LEFT (2 RIGHT 3))", "l2r")
     ('(1 LEFT (2 RIGHT 3', ')')
 
     # Doc tests won't allow string line break via parenthesis alone
-    >>> left_to_right_parenth_break(\
-        "(2 UP ((1 LEFT (2 RIGHT 3)) UP 3)) DOWN 11")
+    >>> parenthesis_break(\
+        "(2 UP ((1 LEFT (2 RIGHT 3)) UP 3)) DOWN 11", "l2r")
     ('(2 UP ((1 LEFT (2 RIGHT 3', ') UP 3)) DOWN 11')
 
-    """
-    split = stri.split(")", 1)
-    left_split = split[0]
-    right_split = split[1]
-    return left_split, right_split
-
-
-def right_to_left_parenth_break(stri):
-    """
-    >>> right_to_left_parenth_break('(2 RIGHT 3')
+    >>> parenthesis_break('(2 RIGHT 3', "r2l")
     ('', '2 RIGHT 3')
 
-    >>> right_to_left_parenth_break("(1 LEFT (2 RIGHT 3")
+    >>> parenthesis_break("(1 LEFT (2 RIGHT 3", "r2l")
     ('(1 LEFT ', '2 RIGHT 3')
 
-    >>> right_to_left_parenth_break("(2 UP ((1 LEFT (2 RIGHT 3")
+    >>> parenthesis_break("(2 UP ((1 LEFT (2 RIGHT 3", "r2l")
     ('(2 UP ((1 LEFT ', '2 RIGHT 3')
 
+    >>> parenthesis_break('(2 RIGHT 3)', "bla")
+    Traceback (most recent call last):
+      File "/usr/lib/python2.7/doctest.py", line 1289, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.parenthesis_break[6]>", line 1, in <module>
+        parenthesis_break('(2 RIGHT 3)', "bla")
+      File "alien_language_parser.py", line 166, in parenthesis_break
+        raise Exception("'{0}' is not a valid argument".format(direction))
+    Exception: 'bla' is not a valid argument
+
     """
-    split = stri.rsplit("(", 1)
+    if direction == "l2r":
+        split = stri.split(")", 1)
+    elif direction == "r2l":
+        split = stri.rsplit("(", 1)
+    else:
+        raise Exception("'{0}' is not a valid argument".format(direction))
+
     left_split = split[0]
     right_split = split[1]
     return left_split, right_split
@@ -226,8 +233,8 @@ def alien_eval(alien_string):
                 return int(operate(tmp_result))
 
     elif alien_string.startswith("("):
-        l2r_first, parse_data.L2R_LAST = left_to_right_parenth_break(alien_string)
-        parse_data.R2L_LAST, r2l_first = right_to_left_parenth_break(l2r_first)
+        l2r_first, parse_data.L2R_LAST = parenthesis_break(alien_string, "l2r")
+        parse_data.R2L_LAST, r2l_first = parenthesis_break(l2r_first, "r2l")
         return alien_eval(r2l_first)
 
     else:
