@@ -3,6 +3,7 @@
 #  Our own little alien language parsing utility  #
 ###################################################
 
+Applicant: Robrecht De Rouck
 """
 
 
@@ -83,20 +84,20 @@ def operate(operable_string):
 
 def break_first_operable_group_right_sided(stri):
     """
-    >>> break_fist_operable_group_right_sided('3 LEFT 4')
+    >>> break_first_operable_group_right_sided('3 LEFT 4')
     ('3 LEFT ', '4')
 
-    >>> break_fist_operable_group_right_sided('23 RIGHT 3 LEFT 12')
+    >>> break_first_operable_group_right_sided('23 RIGHT 3 LEFT 12')
     ('23 RIGHT ', '3 LEFT 12')
 
-    >>> break_fist_operable_group_right_sided('(23 RIGHT 3 LEFT 12')
+    >>> break_first_operable_group_right_sided('(23 RIGHT 3 LEFT 12')
     Traceback (most recent call last):
       File "/usr/lib/python2.7/doctest.py", line 1289, in __run
         compileflags, 1) in test.globs
-      File "<doctest __main__.break_fist_operable_group_right_sided[2]>",
+      File "<doctest __main__.break_first_operable_group_right_sided[2]>",
         line 1, in <module>
-        break_fist_operable_group_right_sided("(23 RIGHT 3 LEFT 12")
-      File "policy_brain.py", line 65, in break_fist_operable_group_right_sided
+        break_first_operable_group_right_sided("(23 RIGHT 3 LEFT 12")
+      File "policy_brain.py", line 65, in break_first_operable_group_right_sided
         raise Exception("Should start with a digit")
     Exception: Should start with a digit
 
@@ -120,10 +121,10 @@ def break_first_operable_group_left_sided(stri):
     Traceback (most recent call last):
       File "/usr/lib/python2.7/doctest.py", line 1289, in __run
         compileflags, 1) in test.globs
-      File "<doctest __main__.break_fist_operable_group_right_sided[2]>",
+      File "<doctest __main__.break_first_operable_group_right_sided[2]>",
         line 1, in <module>
         break_first_operable_group_left_sided("(23 RIGHT 3 LEFT 12")
-      File "policy_brain.py", line 65, in break_fist_operable_group_right_sided
+      File "policy_brain.py", line 65, in break_first_operable_group_right_sided
         raise Exception("Should start with a digit")
     Exception: Should start with a digit
 
@@ -215,7 +216,7 @@ def alien_eval(alien_string):
             parse_data.L2R_LAST = ""
             return alien_eval(current_string)
         else:
-            rhead, rremainder = break_fist_operable_group_right_sided(alien_string)
+            rhead, rremainder = break_first_operable_group_right_sided(alien_string)
             if not rremainder.startswith('('):
                 lhead, lremainder = break_first_operable_group_left_sided(rremainder)
                 operable_stri = "{0}{1}".format(rhead, lhead)
