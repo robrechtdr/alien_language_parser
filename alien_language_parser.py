@@ -60,18 +60,20 @@ def operate(operable_string):
 
     """
     operation_blocks = operable_string.split()
+    left_operand = operation_blocks[0]
+    right_operand = operation_blocks[2]
     if "LEFT" in operable_string:
-        return operation_blocks[0]
+        return left_operand
     elif "RIGHT" in operable_string:
-        return operation_blocks[2]
+        return right_operand
     elif "UP" in operable_string:
-        if int(operation_blocks[2]) % int(operation_blocks[0]) == 0:
+        if int(right_operand) % int(left_operand) == 0:
             return "1"
         else:
             return "0"
 
     elif "DOWN" in operable_string:
-        sum_blocks = int(operation_blocks[0]) + int(operation_blocks[2])
+        sum_blocks = int(left_operand) + int(right_operand)
         if is_prime(sum_blocks):
             return "1"
         else:
