@@ -226,29 +226,6 @@ def break_on_parenthesis(text, direction="l2r"):
     return left_split, right_split
 
 
-# Slightly less namespace-polluting than using global
-class ParseData(object):
-    """Holds text between recursive calls of alien_eval."""
-    def __init__(self):
-        #: Is prepended to text of a recursive call of alien_eval stemming
-        #: from a text beginning with a left parenthesis.
-        #:
-        #: Example :
-        #:   alien_eval("(1 LEFT (2 RIGHT 1) RIGHT 4)")
-        #:     then
-        #:   self.R2L_LAST is "(1 LEFT "
-        self.R2L_LAST = ""
-
-        #: Similar to the above but it is appended instead of prepended.
-        #:
-        #: For example above:
-        #:   self.L2R_LAST is " RIGHT 4"
-        self.L2R_LAST = ""
-
-
-parse_data = ParseData()
-
-
 def alien_eval(text):
     """Evaluate a piece of text in our alien language to a number.
 
@@ -269,7 +246,7 @@ def alien_eval(text):
         >>> alien_eval("8 LEFT 3 LEFT 4")
         8
 
-        >>> alien_eval("((8 UP 3 ))")
+        >>> alien_eval("((8 UP 3))")
         0
 
         # This case follows another parsing path
@@ -278,41 +255,43 @@ def alien_eval(text):
         3
 
     """
+    text_split = text.split()
     if text[0].isdigit():
         # Case: "12"
-        if len(text.split()) == 1:
+        if len(text_split) == 1:
             return int(text)
         # Case: "2 RIGHT 12"
-        elif len(text.split()) == 3:
-            tmp_result = calculate(text)
-            current_string = "{0}{1}{2}".format(parse_data.R2L_LAST,
-                                                tmp_result,
-                                                parse_data.L2R_LAST)
-            parse_data.R2L_LAST = ""
-            parse_data.L2R_LAST = ""
-            return alien_eval(current_string)
+        elif len(text_split) == 3:
+            result = calculate(text)
+            return alien_eval(result)
         else:
             rhead, rremainder = break_in_first_operable_group(text, "right")
-
             # Case: "2 RIGHT 12 LEFT 3"
             if not rremainder.startswith('('):
                 lhead, lremainder = break_in_first_operable_group(rremainder,
                                                                   "left")
-                operable_stri = "{0}{1}".format(rhead, lhead)
-                tmp_result = calculate(operable_stri)
+                operable_group = "{0}{1}".format(rhead, lhead)
+                tmp_result = calculate(operable_group)
                 current_string = "{0}{1}".format(tmp_result, lremainder)
                 return alien_eval(current_string)
-
             # Case: "2 RIGHT (3 RIGHT 4)"
             else:
-                tmp_result = "{0}{1}".format(rhead, alien_eval(rremainder))
-                return int(calculate(tmp_result))
+                operable_group = "{0}{1}".format(rhead, alien_eval(rremainder))
+                return alien_eval(operable_group)
 
-    # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
     elif text.startswith("("):
-        l2r_first, parse_data.L2R_LAST = break_on_parenthesis(text, "l2r")
-        parse_data.R2L_LAST, r2l_first = break_on_parenthesis(l2r_first, "r2l")
-        return alien_eval(r2l_first)
+        # Case: "((3))"
+        if len(text_split) == 1:
+            left_parenth_removed = text.replace("(", "")
+            parentheses_removed_text = left_parenth_removed.replace(")", "")
+            return alien_eval(parentheses_removed_text)
+        # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
+        else:
+            l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
+            r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
+            tmp_result = calculate(r2l_first)
+            current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
+            return alien_eval(current_string)
 
     else:
         raise Exception("Else Die")
