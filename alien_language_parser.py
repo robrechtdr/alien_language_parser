@@ -33,8 +33,8 @@ def is_prime(n):
 
     """
     l = range(2, n)
-    for m in range(len(l)):
-        if n % l[m] == 0:
+    for i in range(len(l)):
+        if n % l[i] == 0:
             return False
     if n < 2:
         return False
@@ -159,8 +159,8 @@ def break_in_first_operable_group(text, break_side="right"):
 
         >>> break_in_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
         Traceback (most recent call last):
-            raise ValueError("'{0}' is not a valid argument".format(break_side))
-        ValueError: 'bla' is not a valid argument
+            raise ValueError("'{0}' is not a valid break side".format(break_side))
+        ValueError: 'bla' is not a valid break side
 
         >>> break_in_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
         Traceback (most recent call last):
@@ -186,7 +186,7 @@ def break_in_first_operable_group(text, break_side="right"):
         head = " ".join(split[:1])
         remainder = " {0}".format(" ".join(split[1:]))
     else:
-        raise ValueError("'{0}' is not a valid argument".format(break_side))
+        raise ValueError("'{0}' is not a valid break side".format(break_side))
 
     return head, remainder
 
