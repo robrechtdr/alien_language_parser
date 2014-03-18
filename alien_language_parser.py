@@ -80,7 +80,8 @@ def calculate(operable_group):
 
         >>> calculate('1 LEFT 2 RIGHT 4')
         Traceback (most recent call last):
-            raise ValueError("'{0}' is not a valid operable group".format(operable_group))
+            raise ValueError(
+                "'{0}' is not a valid operable group"\.format(operable_group))
         ValueError: '1 LEFT 2 RIGHT 4' is not a valid operable group
 
         >>> calculate('(1 LEFT 2')
@@ -99,10 +100,10 @@ def calculate(operable_group):
     left_operand = operation_blocks[0]
     right_operand = operation_blocks[2]
     operator = operation_blocks[1]
-    allowed_operators = ("LEFT", "RIGHT", "UP", "DOWN")
 
     if len(operation_blocks) != 3:
-        raise ValueError("'{0}' is not a valid operable group".format(operable_group))
+        raise ValueError(
+            "'{0}' is not a valid operable group".format(operable_group))
 
     try:
         int(left_operand)
@@ -159,7 +160,8 @@ def break_in_first_operable_group(text, break_side="right"):
 
         >>> break_in_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
         Traceback (most recent call last):
-            raise ValueError("'{0}' is not a valid break side".format(break_side))
+            raise ValueError(
+                "'{0}' is not a valid break side".format(break_side))
         ValueError: 'bla' is not a valid break side
 
         >>> break_in_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
@@ -231,7 +233,8 @@ def break_on_parenthesis(text, direction="l2r"):
 
         >>> break_on_parenthesis('(2 RIGHT 3)', "bla")
         Traceback (most recent call last):
-            raise ValueError("'{0}' is not a valid direction".format(direction))
+            raise ValueError(
+                "'{0}' is not a valid direction".format(direction))
         ValueError: 'bla' is not a valid direction
 
         >>> break_on_parenthesis("(3 RIGHT 2", "l2r")
@@ -304,7 +307,8 @@ def alien_eval(text):
 
         >>> alien_eval(")2 LEFT 4")
         Traceback (most recent call last):
-            raise ValueError("'{0}' does not have a valid Alien Language syntax")
+            raise ValueError(
+                "'{0}' does not have a valid Alien Language syntax")
         ValueError: '{0}' does not have a valid Alien Language syntax
 
     """
