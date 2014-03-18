@@ -73,21 +73,54 @@ def calculate(operable_group):
         >>> calculate('8 UP 3')
         '0'
 
+        >>> calculate(1)
+        Traceback (most recent call last):
+            raise TypeError("'{0}' must be a string".format(operable_group))
+        TypeError: '1' must be a string
+
+        >>> calculate('1 LEFT 2 RIGHT 4')
+        Traceback (most recent call last):
+            raise ValueError("'{0}' is not a valid operable group".format(operable_group))
+        ValueError: '1 LEFT 2 RIGHT 4' is not a valid operable group
+
+        >>> calculate('(1 LEFT 2')
+        Traceback (most recent call last):
+            raise not_a_number
+        ValueError: invalid literal for int() with base 10: '(1'
+
     """
+    # Getting a TypeError is more clear than getting an AtttributeError
+    # which would occur on the first split method call if operable_group
+    # wasn't a string.
+    if not isinstance(operable_group, str):
+        raise TypeError("'{0}' must be a string".format(operable_group))
+
     operation_blocks = operable_group.split()
     left_operand = operation_blocks[0]
     right_operand = operation_blocks[2]
-    if "LEFT" in operable_group:
+    operator = operation_blocks[1]
+    allowed_operators = ("LEFT", "RIGHT", "UP", "DOWN")
+
+    if len(operation_blocks) != 3:
+        raise ValueError("'{0}' is not a valid operable group".format(operable_group))
+
+    try:
+        int(left_operand)
+        int(right_operand)
+    except ValueError as not_a_number:
+        raise not_a_number
+
+    if operator == "LEFT":
         return left_operand
-    elif "RIGHT" in operable_group:
+    elif operator == "RIGHT":
         return right_operand
-    elif "UP" in operable_group:
+    elif operator == "UP":
         if int(right_operand) % int(left_operand) == 0:
             return "1"
         else:
             return "0"
 
-    elif "DOWN" in operable_group:
+    elif operator == "DOWN":
         sum_blocks = int(left_operand) + int(right_operand)
         if is_prime(sum_blocks):
             return "1"
@@ -95,8 +128,7 @@ def calculate(operable_group):
             return "0"
 
     else:
-        raise Exception(
-            "Operator in '{0}' is invalid".format(operable_group))
+        raise ValueError("'{0}' is not a valid operator")
 
 
 def break_in_first_operable_group(text, break_side="right"):
@@ -127,25 +159,11 @@ def break_in_first_operable_group(text, break_side="right"):
 
         >>> break_in_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
         Traceback (most recent call last):
-          File "/usr/lib/python2.7/doctest.py", line 1289, in __run
-            compileflags, 1) in test.globs
-          File "<doctest __main__.break_in_first_operable_group[4]>",
-            line 1, in <module>
-            break_in_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
-          File "alien_language_parser.py", line 125,
-            in break_in_first_operable_group
             raise Exception("'{0}' is not a valid argument".format(break_side))
         Exception: 'bla' is not a valid argument
 
         >>> break_in_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
         Traceback (most recent call last):
-          File "/usr/lib/python2.7/doctest.py", line 1289, in __run
-            compileflags, 1) in test.globs
-          File "<doctest __main__.break_in_first_operable_group[5]>",
-            line 1, in <module>
-            break_in_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
-          File "alien_language_parser.py", line 144,
-            in break_in_first_operable_group
             raise Exception("Should start with a digit")
         Exception: Should start with a digit
 
@@ -204,12 +222,6 @@ def break_on_parenthesis(text, direction="l2r"):
 
         >>> break_on_parenthesis('(2 RIGHT 3)', "bla")
         Traceback (most recent call last):
-          File "/usr/lib/python2.7/doctest.py", line 1289, in __run
-            compileflags, 1) in test.globs
-          File "<doctest __main__.break_on_parenthesis[6]>", line 1,
-            in <module>
-            break_on_parenthesis('(2 RIGHT 3)', "bla")
-          File "alien_language_parser.py", line 166, in break_on_parenthesis
             raise Exception("'{0}' is not a valid argument".format(direction))
         Exception: 'bla' is not a valid argument
 
