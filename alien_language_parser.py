@@ -159,17 +159,25 @@ def break_in_first_operable_group(text, break_side="right"):
 
         >>> break_in_first_operable_group('23 RIGHT 3 LEFT 12', 'bla')
         Traceback (most recent call last):
-            raise Exception("'{0}' is not a valid argument".format(break_side))
-        Exception: 'bla' is not a valid argument
+            raise ValueError("'{0}' is not a valid argument".format(break_side))
+        ValueError: 'bla' is not a valid argument
 
         >>> break_in_first_operable_group('(23 RIGHT 3 LEFT 12', 'right')
         Traceback (most recent call last):
-            raise Exception("Should start with a digit")
-        Exception: Should start with a digit
+            raise ValueError("'(23 RIGHT 3 LEFT 12' should start with a digit")
+        ValueError: '(23 RIGHT 3 LEFT 12' should start with a digit
+
+        >>> break_in_first_operable_group(4546546)
+        Traceback (most recent call last):
+            raise TypeError("'{0}' must be a string".format(text))
+        TypeError: '4546546' must be a string
 
     """
+    if not isinstance(text, str):
+        raise TypeError("'{0}' must be a string".format(text))
     if not text[0].isdigit():
-        raise Exception("Should start with a digit")
+        raise ValueError("'{0}' should start with a digit".format(text))
+
     split = text.split()
     if break_side == "right":
         head = "{0} ".format(" ".join(split[:2]))
@@ -178,7 +186,8 @@ def break_in_first_operable_group(text, break_side="right"):
         head = " ".join(split[:1])
         remainder = " {0}".format(" ".join(split[1:]))
     else:
-        raise Exception("'{0}' is not a valid argument".format(break_side))
+        raise ValueError("'{0}' is not a valid argument".format(break_side))
+
     return head, remainder
 
 
