@@ -231,19 +231,41 @@ def break_on_parenthesis(text, direction="l2r"):
 
         >>> break_on_parenthesis('(2 RIGHT 3)', "bla")
         Traceback (most recent call last):
-            raise Exception("'{0}' is not a valid argument".format(direction))
-        Exception: 'bla' is not a valid argument
+            raise ValueError("'{0}' is not a valid direction".format(direction))
+        ValueError: 'bla' is not a valid direction
+
+        >>> break_on_parenthesis("(3 RIGHT 2", "l2r")
+        Traceback (most recent call last):
+            raise ValueError("{0} does not contain a `)`".format(text))
+        ValueError: (3 RIGHT 2 does not contain a `)`
+
+        >>> break_on_parenthesis(489)
+        Traceback (most recent call last):
+            raise TypeError("'{0}' must be a string".format(text))
+        TypeError: '489' must be a string
 
     """
+    if not isinstance(text, str):
+        raise TypeError("'{0}' must be a string".format(text))
+
     if direction == "l2r":
         split = text.split(")", 1)
+        try:
+            right_split = split[1]
+        except IndexError:
+            raise ValueError("{0} does not contain a `)`".format(text))
+
     elif direction == "r2l":
         split = text.rsplit("(", 1)
+        try:
+            right_split = split[1]
+        except IndexError:
+            raise ValueError("{0} does not contain a `(`".format(text))
+
     else:
-        raise Exception("'{0}' is not a valid argument".format(direction))
+        raise ValueError("'{0}' is not a valid direction".format(direction))
 
     left_split = split[0]
-    right_split = split[1]
     return left_split, right_split
 
 
