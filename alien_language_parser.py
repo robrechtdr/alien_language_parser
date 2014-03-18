@@ -266,8 +266,24 @@ def alien_eval(text):
         >>> alien_eval("18 RIGHT (3 LEFT 4)")
         3
 
+        >>> alien_eval(3)
+        Traceback (most recent call last):
+            raise TypeError("'{0}' must be a string".format(text))
+        TypeError: '3' must be a string
+
+        >>> alien_eval(")2 LEFT 4")
+        Traceback (most recent call last):
+            raise ValueError("'{0}' does not have a valid Alien Language syntax")
+        ValueError: '{0}' does not have a valid Alien Language syntax
+
     """
+    # Getting a TypeError is more clear than getting an AtttributeError
+    # which would occur on the first split method call if operable_group
+    # wasn't a string.
+    if not isinstance(text, str):
+        raise TypeError("'{0}' must be a string".format(text))
     text_split = text.split()
+
     if text[0].isdigit():
         # Case: "12"
         if len(text_split) == 1:
@@ -306,7 +322,7 @@ def alien_eval(text):
             return alien_eval(current_string)
 
     else:
-        raise Exception("Else Die")
+        raise ValueError("'{0}' does not have a valid Alien Language syntax")
 
 
 if __name__ == "__main__":
