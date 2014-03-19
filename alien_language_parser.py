@@ -288,6 +288,9 @@ def alien_eval(text):
         >>> alien_eval("(1 LEFT 2) RIGHT 1")
         1
 
+        >>> alien_eval("8 LEFT 4")
+        8
+
         # Bonus : }
         >>> alien_eval("8 LEFT 3 LEFT 4")
         8
@@ -317,47 +320,50 @@ def alien_eval(text):
     # wasn't a string.
     if not isinstance(text, str):
         raise TypeError("'{0}' must be a string".format(text))
-    text_split = text.split()
 
-    if text[0].isdigit():
-        # Case: "12"
-        if len(text_split) == 1:
-            return int(text)
-        # Case: "2 RIGHT 12"
-        elif len(text_split) == 3:
-            result = calculate(text)
-            return alien_eval(result)
-        else:
-            rhead, rremainder = break_in_first_operable_group(text, "right")
-            # Case: "2 RIGHT 12 LEFT 3"
-            if not rremainder.startswith('('):
-                lhead, lremainder = break_in_first_operable_group(rremainder,
-                                                                  "left")
-                operable_group = "{0}{1}".format(rhead, lhead)
-                tmp_result = calculate(operable_group)
-                current_string = "{0}{1}".format(tmp_result, lremainder)
-                return alien_eval(current_string)
-            # Case: "2 RIGHT (3 RIGHT 4)"
+    while len(text.split()) != 1 :
+        text_split = text.split()
+
+        if text[0].isdigit():
+            # Case: "2 RIGHT 12"
+            if len(text_split) == 3:
+                text = calculate(text)
+                continue
+
             else:
-                operable_group = "{0}{1}".format(rhead, alien_eval(rremainder))
-                return alien_eval(operable_group)
+                rhead, rremainder = break_in_first_operable_group(text, "right")
+                # Case: "2 RIGHT 12 LEFT 3"
+                if not rremainder.startswith('('):
+                    lhead, lremainder = break_in_first_operable_group(rremainder,
+                                                                      "left")
+                    operable_group = "{0}{1}".format(rhead, lhead)
+                    tmp_result = calculate(operable_group)
+                    text = "{0}{1}".format(tmp_result, lremainder)
+                    continue
 
-    elif text.startswith("("):
-        # Case: "((3))"
-        if len(text_split) == 1:
-            left_parenth_removed = text.replace("(", "")
-            parentheses_removed_text = left_parenth_removed.replace(")", "")
-            return alien_eval(parentheses_removed_text)
-        # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
-        else:
+                # Case: "2 RIGHT (3 RIGHT 4)"
+                else:
+                    text = "{0}{1}".format(rhead, alien_eval(rremainder))
+                    continue
+
+        elif text.startswith("("):
+            # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
             l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
             r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
             tmp_result = calculate(r2l_first)
-            current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
-            return alien_eval(current_string)
+            text = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
+            continue
 
-    else:
-        raise ValueError("'{0}' does not have a valid Alien Language syntax")
+        else:
+            raise ValueError("'{0}' does not have a valid Alien Language syntax")
+
+    # Case: "((3))"
+    # Doesn't need conditional since a non-parenthesis-containing
+    # string remains unaffected.
+    left_parenthesis_removed = text.replace("(", "")
+    parenthesis_cleaned_text = left_parenthesis_removed.replace(")", "")
+    # Case: "12"
+    return int(parenthesis_cleaned_text)
 
 
 if __name__ == "__main__":
