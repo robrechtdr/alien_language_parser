@@ -26,3 +26,5 @@ print alien_eval("((8 UP 3))")			#bonus. returns 0
 print alien_eval("(2 DOWN ((1 LEFT (2 RIGHT 3)) UP 3)) DOWN 11")		#returns ?
 
 Your task is to write a short Python program that can parse this language without using any non standard python 2.7 library (and/or the eval function). Furthermore you should NOT use the REGEX module.
+
+> Check the git branches for alternative algorithms (which use e.g. a while loop instead of recursion).
