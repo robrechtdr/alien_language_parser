@@ -89,6 +89,11 @@ def calculate(operable_group):
             raise not_a_number
         ValueError: invalid literal for int() with base 10: '(1'
 
+        >>> calculate('1 BLA 2')
+        Traceback (most recent call last):
+            raise ValueError("'{0}' is not a valid operator".format(operator))
+        ValueError: 'BLA' is not a valid operator
+
     """
     # Getting a TypeError is more clear than getting an AtttributeError
     # which would occur on the first split method call if operable_group
@@ -129,7 +134,7 @@ def calculate(operable_group):
             return "0"
 
     else:
-        raise ValueError("'{0}' is not a valid operator")
+        raise ValueError("'{0}' is not a valid operator".format(operator))
 
 
 def break_in_first_operable_group(text, break_side="right"):
