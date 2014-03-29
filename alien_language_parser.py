@@ -314,7 +314,7 @@ def alien_eval(text):
         Traceback (most recent call last):
             raise ValueError(
                 "'{0}' does not have a valid Alien Language syntax")
-        ValueError: '{0}' does not have a valid Alien Language syntax
+        ValueError: ')2 LEFT 4' does not have a valid Alien Language syntax
 
     """
     # Getting a TypeError is more clear than getting an AtttributeError
@@ -362,7 +362,7 @@ def alien_eval(text):
             return alien_eval(current_string)
 
     else:
-        raise ValueError("'{0}' does not have a valid Alien Language syntax")
+        raise ValueError("'{0}' does not have a valid Alien Language syntax".format(text))
 
 
 if __name__ == "__main__":
