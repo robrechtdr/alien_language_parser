@@ -111,8 +111,8 @@ def calculate(operable_group):
             "'{0}' is not a valid operable group".format(operable_group))
 
     try:
-        int(left_operand)
-        int(right_operand)
+        left_operand_int = int(left_operand)
+        right_operand_int = int(right_operand)
     except ValueError as not_a_number:
         raise not_a_number
 
@@ -121,13 +121,13 @@ def calculate(operable_group):
     elif operator == "RIGHT":
         return right_operand
     elif operator == "UP":
-        if int(right_operand) % int(left_operand) == 0:
+        if right_operand_int % left_operand_int == 0:
             return "1"
         else:
             return "0"
 
     elif operator == "DOWN":
-        sum_blocks = int(left_operand) + int(right_operand)
+        sum_blocks = left_operand_int + right_operand_int
         if is_prime(sum_blocks):
             return "1"
         else:
