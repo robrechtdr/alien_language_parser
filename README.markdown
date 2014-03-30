@@ -1,4 +1,4 @@
-# Alien Language parsing problem
+## Problem
 
 > I received this problem during an application for a position as a Python Software Engineer. 
 
@@ -27,4 +27,21 @@ print alien_eval("(2 DOWN ((1 LEFT (2 RIGHT 3)) UP 3)) DOWN 11")		#returns ?
 
 Your task is to write a short Python program that can parse this language without using any non standard python 2.7 library (and/or the eval function). Furthermore you should NOT use the REGEX module.
 
+
+## Solution
+
+### Python
+
+    python alien_language_parser.py
+
 > Check the git branches for alternative algorithms (which use e.g. a while loop instead of recursion).
+
+### Javascript
+
+> Install [doctest](https://github.com/davidchambers/doctest) with `npm install -g doctest`
+
+    doctest alien_language_parser.js
+
+If you only want to run the program then run the following:
+
+    node alien_language_parser.js

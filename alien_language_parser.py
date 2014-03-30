@@ -1,9 +1,6 @@
-"""
 ###################################################
 #  Our own little alien language parsing utility  #
 ###################################################
-
-"""
 
 
 def is_prime(n):
@@ -89,6 +86,11 @@ def calculate(operable_group):
             raise not_a_number
         ValueError: invalid literal for int() with base 10: '(1'
 
+        >>> calculate('1 BLA 2')
+        Traceback (most recent call last):
+            raise ValueError("'{0}' is not a valid operator".format(operator))
+        ValueError: 'BLA' is not a valid operator
+
     """
     # Getting a TypeError is more clear than getting an AtttributeError
     # which would occur on the first split method call if operable_group
@@ -106,8 +108,8 @@ def calculate(operable_group):
             "'{0}' is not a valid operable group".format(operable_group))
 
     try:
-        int(left_operand)
-        int(right_operand)
+        left_operand_int = int(left_operand)
+        right_operand_int = int(right_operand)
     except ValueError as not_a_number:
         raise not_a_number
 
@@ -116,20 +118,20 @@ def calculate(operable_group):
     elif operator == "RIGHT":
         return right_operand
     elif operator == "UP":
-        if int(right_operand) % int(left_operand) == 0:
+        if right_operand_int % left_operand_int == 0:
             return "1"
         else:
             return "0"
 
     elif operator == "DOWN":
-        sum_blocks = int(left_operand) + int(right_operand)
+        sum_blocks = left_operand_int + right_operand_int
         if is_prime(sum_blocks):
             return "1"
         else:
             return "0"
 
     else:
-        raise ValueError("'{0}' is not a valid operator")
+        raise ValueError("'{0}' is not a valid operator".format(operator))
 
 
 def break_in_first_operable_group(text, break_side="right"):
@@ -312,7 +314,7 @@ def alien_eval(text):
         Traceback (most recent call last):
             raise ValueError(
                 "'{0}' does not have a valid Alien Language syntax")
-        ValueError: '{0}' does not have a valid Alien Language syntax
+        ValueError: ')2 LEFT 4' does not have a valid Alien Language syntax
 
     """
     # Getting a TypeError is more clear than getting an AtttributeError
@@ -355,7 +357,7 @@ def alien_eval(text):
             continue
 
         else:
-            raise ValueError("'{0}' does not have a valid Alien Language syntax")
+            raise ValueError("'{0}' does not have a valid Alien Language syntax".format(text))
 
     # Case: "((3))"
     # Doesn't need conditional since a non-parenthesis-containing
