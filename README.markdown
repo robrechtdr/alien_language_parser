@@ -42,6 +42,6 @@ Your task is to write a short Python program that can parse this language withou
 
     doctest alien_language_parser.js
 
-If you only want to run the program then run the following:
+If you want to run the program without doctests then run the following:
 
     node alien_language_parser.js
