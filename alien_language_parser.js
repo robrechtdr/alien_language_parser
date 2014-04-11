@@ -87,13 +87,6 @@ function isPrime(n) {
 //   Error //'Bla' is not a valid operator
 //
 function calculate(operableGroup) {
-  // TypeError would be raised either way if operableGroup wasn't a string
-  // when the `split` method would be called. However, this error message is 
-  // slightly clearer.   
-  if (typeof operableGroup !== "string") {
-    throw new TypeError("'" + operableGroup + "' must be a string");
-  } 
-
   var operationBlocks = operableGroup.split(" ");
   var leftOperand = operationBlocks[0];
   var rightOperand = operationBlocks[2];
@@ -170,14 +163,7 @@ function calculate(operableGroup) {
 //   > breakInFirstOperableGroup('(23 RIGHT 3 LEFT 12', 'right')
 //   Error //'(23 RIGHT 3 LEFT 12' should start with a digit
 //
-//   > breakInFirstOperableGroup(4546546, 'right')
-//   TypeError //'4546546' must be a string
-//
 function breakInFirstOperableGroup(text, breakSide) {
-  if (typeof text !== "string") {
-    throw new TypeError("'" + text + "' must be a string"); 
-  }
-
   var textStartsWithNumber = !isNaN(Number(text[0]));
   if (!textStartsWithNumber) {
     throw new Error("'" + text + "' should start with a digit");
@@ -241,14 +227,7 @@ function breakInFirstOperableGroup(text, breakSide) {
 //   > breakOnParenthesis("(3 RIGHT 2", "l2r")
 //   Error //(3 RIGHT 2 does not contain a `)`
 //
-//   > breakOnParenthesis(489)
-//   TypeError //'489' must be a string
-//
 function breakOnParenthesis(text, direction) {
-  if(typeof text !== "string") {
-    throw new TypeError("'" + text + "' must be a string"); 
-  }
-
   if (direction === "l2r") {
     var splitStri = ")";
     var tmpSplit = text.split(splitStri);
