@@ -70,11 +70,6 @@ def calculate(operable_group):
         >>> calculate('8 UP 3')
         '0'
 
-        >>> calculate(1)
-        Traceback (most recent call last):
-            raise TypeError("'{0}' must be a string".format(operable_group))
-        TypeError: '1' must be a string
-
         >>> calculate('1 LEFT 2 RIGHT 4')
         Traceback (most recent call last):
             raise ValueError(
@@ -92,12 +87,6 @@ def calculate(operable_group):
         ValueError: 'BLA' is not a valid operator
 
     """
-    # Getting a TypeError is more clear than getting an AtttributeError
-    # which would occur on the first split method call if operable_group
-    # wasn't a string.
-    if not isinstance(operable_group, str):
-        raise TypeError("'{0}' must be a string".format(operable_group))
-
     operation_blocks = operable_group.split()
     left_operand = operation_blocks[0]
     right_operand = operation_blocks[2]
@@ -171,14 +160,7 @@ def break_in_first_operable_group(text, break_side="right"):
             raise ValueError("'(23 RIGHT 3 LEFT 12' should start with a digit")
         ValueError: '(23 RIGHT 3 LEFT 12' should start with a digit
 
-        >>> break_in_first_operable_group(4546546)
-        Traceback (most recent call last):
-            raise TypeError("'{0}' must be a string".format(text))
-        TypeError: '4546546' must be a string
-
     """
-    if not isinstance(text, str):
-        raise TypeError("'{0}' must be a string".format(text))
     if not text[0].isdigit():
         raise ValueError("'{0}' should start with a digit".format(text))
 
@@ -244,15 +226,7 @@ def break_on_parenthesis(text, direction="l2r"):
             raise ValueError("{0} does not contain a `)`".format(text))
         ValueError: (3 RIGHT 2 does not contain a `)`
 
-        >>> break_on_parenthesis(489)
-        Traceback (most recent call last):
-            raise TypeError("'{0}' must be a string".format(text))
-        TypeError: '489' must be a string
-
     """
-    if not isinstance(text, str):
-        raise TypeError("'{0}' must be a string".format(text))
-
     if direction == "l2r":
         split = text.split(")", 1)
         try:
