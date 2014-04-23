@@ -336,10 +336,9 @@ def alien_eval(text):
     # Case: "((3))"
     # Doesn't need conditional since a non-parenthesis-containing
     # string remains unaffected.
-    left_parenthesis_removed = text.replace("(", "")
-    parenthesis_cleaned_text = left_parenthesis_removed.replace(")", "")
+    parentheses_stripped_text = text.strip("()")
     # Case: "12"
-    return int(parenthesis_cleaned_text)
+    return int(parentheses_stripped_text)
 
 
 if __name__ == "__main__":
