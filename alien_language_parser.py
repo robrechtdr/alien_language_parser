@@ -321,9 +321,8 @@ def alien_eval(text):
     elif text.startswith("("):
         # Case: "((3))"
         if len(text_split) == 1:
-            left_parenth_removed = text.replace("(", "")
-            parentheses_removed_text = left_parenth_removed.replace(")", "")
-            return alien_eval(parentheses_removed_text)
+            parentheses_stripped_text = text.strip("()")
+            return alien_eval(parentheses_stripped_text)
         # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
         else:
             l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
