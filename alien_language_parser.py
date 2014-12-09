@@ -259,7 +259,6 @@ def resolve_chain_of_operations(text):
     text_split = text.split()
     if len(text_split) == 1:
         return text
-
     else:
         rhead, rremainder = break_in_first_operable_group(text, "right")
         lhead, lremainder = break_in_first_operable_group(rremainder,
@@ -315,12 +314,6 @@ def alien_eval(text):
             raise TypeError("'{0}' must be a string".format(text))
         TypeError: '3' must be a string
 
-        #>>> alien_eval(")2 LEFT 4")
-        Traceback (most recent call last):
-            raise ValueError(
-                "'{0}' does not have a valid Alien Language syntax")
-        ValueError: ')2 LEFT 4' does not have a valid Alien Language syntax
-
     """
     # Getting a TypeError is more clear than getting an AtttributeError
     # which would occur on the first split method call if operable_group
@@ -329,25 +322,18 @@ def alien_eval(text):
         raise TypeError("'{0}' must be a string".format(text))
     text_split = text.split()
 
-    if '(' in text or ')' in text:
-       if len(text_split) == 1:
-            # Case: '((3))'
-            parentheses_stripped_text = text.strip("()")
-            return alien_eval(parentheses_stripped_text)
-       else:
-            # Case: '(2 RIGHT ((1 LEFT 4) UP 3))'
-            return alien_eval(resolve_innermost_parentheses(text))
+    if len(text_split) == 1:
+        # Case: '((3))' or '3'
+        parentheses_stripped_text = text.strip("()")
+        return int(parentheses_stripped_text)
 
-    elif text[0].isdigit():
-        # Case: "12"
-        if len(text_split) == 1:
-            return int(text)
-        else:
-            return alien_eval(resolve_chain_of_operations(text))
-
+    elif '(' in text or ')' in text:
+        # Case: '(2 RIGHT ((1 LEFT 4) UP 3))'
+        return alien_eval(resolve_innermost_parentheses(text))
 
     else:
-        raise ValueError("'{0}' does not have a valid Alien Language syntax".format(text))
+        # Case: '2 RIGHT 12 LEFT 3 RIGHT 9'
+        return alien_eval(resolve_chain_of_operations(text))
 
 if __name__ == "__main__":
     import doctest
