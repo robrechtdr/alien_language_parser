@@ -248,8 +248,8 @@ def break_on_parenthesis(text, direction="l2r"):
     return left_split, right_split
 
 
-def resolve_chain_of_operations(text):
-    """Resolve a chain of operations.
+def resolve_operations(text):
+    """Resolve one or more operations.
 
     Args:
         text (str): A piece of valid alien text without parentheses.
@@ -258,10 +258,10 @@ def resolve_chain_of_operations(text):
         string.
 
     Doctests:
-        >>> resolve_chain_of_operations("2 RIGHT 12")
+        >>> resolve_operations("2 RIGHT 12")
         '12'
 
-        >>> resolve_chain_of_operations("2 RIGHT 12 LEFT 3 RIGHT 9")
+        >>> resolve_operations("2 RIGHT 12 LEFT 3 RIGHT 9")
         '9'
 
     """
@@ -275,7 +275,7 @@ def resolve_chain_of_operations(text):
         operable_group = "{0}{1}".format(rhead, lhead)
         tmp_result = calculate(operable_group)
         current_string = "{0}{1}".format(tmp_result, lremainder)
-        return resolve_chain_of_operations(current_string.strip())
+        return resolve_operations(current_string.strip())
 
 
 def resolve_innermost_parentheses(text):
@@ -295,7 +295,7 @@ def resolve_innermost_parentheses(text):
     """
     l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
     r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
-    tmp_result = resolve_chain_of_operations(r2l_first)
+    tmp_result = resolve_operations(r2l_first)
     current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
     return current_string
 
@@ -352,7 +352,7 @@ def alien_eval(text):
 
     else:
         # Case: '2 RIGHT 12 LEFT 3 RIGHT 9'
-        return alien_eval(resolve_chain_of_operations(text))
+        return alien_eval(resolve_operations(text))
 
 if __name__ == "__main__":
     import doctest
