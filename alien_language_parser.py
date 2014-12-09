@@ -249,12 +249,21 @@ def break_on_parenthesis(text, direction="l2r"):
 
 
 def resolve_chain_of_operations(text):
-    """
-    >>> resolve_chain_of_operations("2 RIGHT 12")
-    '12'
+    """Resolve a chain of operations.
 
-    >>> resolve_chain_of_operations("2 RIGHT 12 LEFT 3 RIGHT 9")
-    '9'
+    Args:
+        text (str): A piece of valid alien text without parentheses.
+
+    Returns:
+        string.
+
+    Doctests:
+        >>> resolve_chain_of_operations("2 RIGHT 12")
+        '12'
+
+        >>> resolve_chain_of_operations("2 RIGHT 12 LEFT 3 RIGHT 9")
+        '9'
+
     """
     text_split = text.split()
     if len(text_split) == 1:
@@ -270,9 +279,19 @@ def resolve_chain_of_operations(text):
 
 
 def resolve_innermost_parentheses(text):
-    """
-    >>> resolve_innermost_parentheses('(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))')
-    '(2 RIGHT ((1 LEFT 4) UP 3))'
+    """Resolve the innermost brackets to a number.
+
+    Args:
+        text (str): A piece of valid alien text which has at least one enclosing
+        parenthesis pair.
+
+    Returns:
+        string.
+
+    Doctests:
+        >>> resolve_innermost_parentheses('(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))')
+        '(2 RIGHT ((1 LEFT 4) UP 3))'
+
     """
     l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
     r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
