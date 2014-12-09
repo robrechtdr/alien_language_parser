@@ -248,6 +248,28 @@ def break_on_parenthesis(text, direction="l2r"):
     return left_split, right_split
 
 
+def resolve_chain_of_operations(text):
+    """
+    >>> resolve_chain_of_operations("2 RIGHT 12")
+    '12'
+
+    >>> resolve_chain_of_operations("2 RIGHT 12 LEFT 3 RIGHT 9")
+    '9'
+    """
+    text_split = text.split()
+    if len(text_split) == 1:
+        return text
+
+    else:
+        rhead, rremainder = break_in_first_operable_group(text, "right")
+        lhead, lremainder = break_in_first_operable_group(rremainder,
+                                                            "left")
+        operable_group = "{0}{1}".format(rhead, lhead)
+        tmp_result = calculate(operable_group)
+        current_string = "{0}{1}".format(tmp_result, lremainder)
+        return resolve_chain_of_operations(current_string.strip())
+
+
 def resolve_innermost_parentheses(text):
     """
     >>> resolve_innermost_parentheses('(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))')
@@ -255,7 +277,7 @@ def resolve_innermost_parentheses(text):
     """
     l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
     r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
-    tmp_result = calculate(r2l_first)
+    tmp_result = resolve_chain_of_operations(r2l_first)
     current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
     return current_string
 
@@ -293,7 +315,7 @@ def alien_eval(text):
             raise TypeError("'{0}' must be a string".format(text))
         TypeError: '3' must be a string
 
-        >>> alien_eval(")2 LEFT 4")
+        #>>> alien_eval(")2 LEFT 4")
         Traceback (most recent call last):
             raise ValueError(
                 "'{0}' does not have a valid Alien Language syntax")
@@ -321,15 +343,8 @@ def alien_eval(text):
         if len(text_split) == 1:
             return int(text)
         else:
-            rhead, rremainder = break_in_first_operable_group(text, "right")
-            # Case: "2 RIGHT 12 LEFT 3" and "2 RIGHT 12"
-            if not rremainder.startswith('('):
-                lhead, lremainder = break_in_first_operable_group(rremainder,
-                                                                  "left")
-                operable_group = "{0}{1}".format(rhead, lhead)
-                tmp_result = calculate(operable_group)
-                current_string = "{0}{1}".format(tmp_result, lremainder)
-                return alien_eval(current_string)
+            return alien_eval(resolve_chain_of_operations(text))
+
 
     else:
         raise ValueError("'{0}' does not have a valid Alien Language syntax".format(text))
