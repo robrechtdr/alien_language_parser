@@ -301,26 +301,20 @@ def alien_eval(text):
         text_split = text.split()
 
         if text[0].isdigit():
-            # Case: "2 RIGHT 12"
-            if len(text_split) == 3:
-                text = calculate(text)
+            rhead, rremainder = break_in_first_operable_group(text, "right")
+            # Case: "2 RIGHT 12 LEFT 3" and "2 RIGHT 12"
+            if not rremainder.startswith('('):
+                lhead, lremainder = break_in_first_operable_group(rremainder,
+                                                                    "left")
+                operable_group = "{0}{1}".format(rhead, lhead)
+                tmp_result = calculate(operable_group)
+                text = "{0}{1}".format(tmp_result, lremainder)
                 continue
 
+            # Case: "2 RIGHT (3 RIGHT 4)"
             else:
-                rhead, rremainder = break_in_first_operable_group(text, "right")
-                # Case: "2 RIGHT 12 LEFT 3"
-                if not rremainder.startswith('('):
-                    lhead, lremainder = break_in_first_operable_group(rremainder,
-                                                                      "left")
-                    operable_group = "{0}{1}".format(rhead, lhead)
-                    tmp_result = calculate(operable_group)
-                    text = "{0}{1}".format(tmp_result, lremainder)
-                    continue
-
-                # Case: "2 RIGHT (3 RIGHT 4)"
-                else:
-                    text = "{0}{1}".format(rhead, alien_eval(rremainder))
-                    continue
+                text = "{0}{1}".format(rhead, alien_eval(rremainder))
+                continue
 
         elif text.startswith("("):
             # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
