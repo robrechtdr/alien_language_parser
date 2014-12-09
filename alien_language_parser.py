@@ -248,6 +248,18 @@ def break_on_parenthesis(text, direction="l2r"):
     return left_split, right_split
 
 
+def resolve_innermost_parentheses(text):
+    """
+    >>> resolve_innermost_parentheses('(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))')
+    '(2 RIGHT ((1 LEFT 4) UP 3))'
+    """
+    l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
+    r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
+    tmp_result = calculate(r2l_first)
+    current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
+    return current_string
+
+
 def alien_eval(text):
     """Evaluate a piece of text in our alien language to a number.
 
@@ -295,7 +307,16 @@ def alien_eval(text):
         raise TypeError("'{0}' must be a string".format(text))
     text_split = text.split()
 
-    if text[0].isdigit():
+    if '(' in text or ')' in text:
+       if len(text_split) == 1:
+            # Case: '((3))'
+            parentheses_stripped_text = text.strip("()")
+            return alien_eval(parentheses_stripped_text)
+       else:
+            # Case: '(2 RIGHT ((1 LEFT 4) UP 3))'
+            return alien_eval(resolve_innermost_parentheses(text))
+
+    elif text[0].isdigit():
         # Case: "12"
         if len(text_split) == 1:
             return int(text)
@@ -309,27 +330,9 @@ def alien_eval(text):
                 tmp_result = calculate(operable_group)
                 current_string = "{0}{1}".format(tmp_result, lremainder)
                 return alien_eval(current_string)
-            # Case: "2 RIGHT (3 RIGHT 4)"
-            else:
-                operable_group = "{0}{1}".format(rhead, alien_eval(rremainder))
-                return alien_eval(operable_group)
-
-    elif text.startswith("("):
-        # Case: "((3))"
-        if len(text_split) == 1:
-            parentheses_stripped_text = text.strip("()")
-            return alien_eval(parentheses_stripped_text)
-        # Case: "(2 RIGHT ((1 LEFT (5 RIGHT 4)) UP 3))"
-        else:
-            l2r_first, l2r_last = break_on_parenthesis(text, "l2r")
-            r2l_last, r2l_first = break_on_parenthesis(l2r_first, "r2l")
-            tmp_result = calculate(r2l_first)
-            current_string = "{0}{1}{2}".format(r2l_last, tmp_result, l2r_last)
-            return alien_eval(current_string)
 
     else:
         raise ValueError("'{0}' does not have a valid Alien Language syntax".format(text))
-
 
 if __name__ == "__main__":
     import doctest
