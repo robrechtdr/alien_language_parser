@@ -299,13 +299,9 @@ def alien_eval(text):
         # Case: "12"
         if len(text_split) == 1:
             return int(text)
-        # Case: "2 RIGHT 12"
-        elif len(text_split) == 3:
-            result = calculate(text)
-            return alien_eval(result)
         else:
             rhead, rremainder = break_in_first_operable_group(text, "right")
-            # Case: "2 RIGHT 12 LEFT 3"
+            # Case: "2 RIGHT 12 LEFT 3" and "2 RIGHT 12"
             if not rremainder.startswith('('):
                 lhead, lremainder = break_in_first_operable_group(rremainder,
                                                                   "left")
